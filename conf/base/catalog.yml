@@ -1,0 +1,8 @@
+raw_data:
+  type: pandas.SQLTableDataset
+  credentials: db_credentials
+  table_name: passengers
+  
+processed_data:
+  type: pandas.ParquetDataset
+  filepath: data/02_intermediate/processed_data.parquet
