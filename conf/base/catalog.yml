@@ -1,7 +1,8 @@
 raw_data:
   type: pandas.SQLTableDataset
   credentials: db_credentials
-  table_name: passengers
+  table_name: airline_data
+
   
 processed_data:
   type: pandas.ParquetDataset

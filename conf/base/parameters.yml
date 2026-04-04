@@ -1,0 +1,6 @@
+target_column: "Satisfaction"
+
+split:
+  test_size: 0.30
+  val_ratio: 0.50
+  random_state: 42
