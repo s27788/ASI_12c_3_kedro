@@ -1,0 +1,2 @@
+git config --global user.email "s24602@pjwstk.edu.pl"
+git config --global user.name "Mateusz Branski"
