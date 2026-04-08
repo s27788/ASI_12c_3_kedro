@@ -1,4 +1,10 @@
 ipython>=8.10
 jupyterlab>=3.0
-kedro~=0.19.9
 notebook
+kedro~=0.19.9
+kedro-datasets
+numpy
+pandas
+scikit-learn
+sqlalchemy
+pyarrow

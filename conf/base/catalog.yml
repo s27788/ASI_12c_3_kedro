@@ -3,11 +3,15 @@ raw_data:
   credentials: db_credentials
   table_name: airline_data
 
-  
 processed_data:
   type: pandas.ParquetDataset
   filepath: data/02_intermediate/processed_data.parquet
+
 classifier:
   type: pickle.PickleDataset
   filepath: data/06_models/random_forest.pkl
   backend: pickle
+
+metrics:
+  type: json.JSONDataset
+  filepath: data/08_reporting/metrics.json

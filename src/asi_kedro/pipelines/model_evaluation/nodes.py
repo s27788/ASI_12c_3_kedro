@@ -11,6 +11,22 @@ def evaluate_model(
     X_val: pd.DataFrame,
     y_val: pd.Series,
 ) -> dict:
+    """Ewaluuje model na zbiorze walidacyjnym.
+
+    Args:
+        model: Wytrenowany model RandomForestClassifier.
+        X_val: Cechy zbioru walidacyjnego.
+        y_val: Target zbioru walidacyjnego.
+
+    Returns:
+        Slownik z metrykami: accuracy, f1.
+    """
+    X_val = X_val.copy()
+    category_mappings = getattr(model, "category_mappings_", {})
+    for col, mapping in category_mappings.items():
+        if col in X_val.columns:
+            X_val[col] = X_val[col].astype(str).map(mapping).fillna(-1).astype(int)
+
     y_pred = model.predict(X_val)
 
     metrics = {

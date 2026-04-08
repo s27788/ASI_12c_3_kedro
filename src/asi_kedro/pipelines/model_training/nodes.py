@@ -1,7 +1,6 @@
 import logging
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import LabelEncoder
 
 logger = logging.getLogger(__name__)
 
@@ -34,10 +33,16 @@ def train_model(
     cat_columns = X_train.select_dtypes(include=["object", "category"]).columns.tolist()
     logger.info("Enkodowanie kolumn kategorycznych: %s", cat_columns)
 
+    category_mappings: dict[str, dict[str, int]] = {}
     for col in cat_columns:
-        le = LabelEncoder()
-        X_train[col] = le.fit_transform(X_train[col].astype(str))
-        X_val[col] = le.transform(X_val[col].astype(str))
+        train_values = X_train[col].astype(str)
+        unique_values = sorted(train_values.unique().tolist())
+        mapping = {value: idx for idx, value in enumerate(unique_values)}
+        category_mappings[col] = mapping
+
+        # Unknown categories map to -1 to keep inference robust.
+        X_train[col] = train_values.map(mapping).fillna(-1).astype(int)
+        X_val[col] = X_val[col].astype(str).map(mapping).fillna(-1).astype(int)
 
     clf = RandomForestClassifier(
         n_estimators=params["n_estimators"],
@@ -48,6 +53,7 @@ def train_model(
     )
 
     clf.fit(X_train, y_train)
+    clf.category_mappings_ = category_mappings
 
     val_score = clf.score(X_val, y_val)
     logger.info("Accuracy na zbiorze walidacyjnym: %.4f", val_score)
