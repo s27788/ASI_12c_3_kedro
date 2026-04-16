@@ -157,3 +157,4 @@ venv.bak/
 # mlflow local runs
 mlruns/*
 .viz/
+wandb/
