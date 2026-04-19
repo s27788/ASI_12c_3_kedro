@@ -8,3 +8,5 @@ pandas
 scikit-learn
 sqlalchemy
 pyarrow
+wandb>=0.25.1
+python-dotenv
