@@ -1,7 +1,7 @@
 raw_data:
   type: pandas.SQLTableDataset
   credentials: db_credentials
-  table_name: passengers
+  table_name: airline_data
 
 processed_data:
   type: pandas.ParquetDataset
@@ -15,3 +15,10 @@ classifier:
 metrics:
   type: json.JSONDataset
   filepath: data/08_reporting/metrics.json
+
+automl_predictor:
+  type: MemoryDataset
+
+automl_metrics:
+  type: json.JSONDataset
+  filepath: data/08_reporting/automl_metrics.json

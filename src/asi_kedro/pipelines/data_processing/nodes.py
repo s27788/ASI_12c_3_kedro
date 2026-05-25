@@ -102,6 +102,8 @@ def split_data(
 ]:
     """Split data into train, validation and test sets."""
 
+    data.columns = [f"{c}" for c in data.columns]   # AUTOGLUON sprint 4 columns to string
+
     target = parameters["target_column"]
     split_params = parameters["split"]
 

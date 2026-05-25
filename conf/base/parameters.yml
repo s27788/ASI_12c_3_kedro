@@ -9,3 +9,8 @@ model:
   max_depth: 10
   min_samples_split: 5
   random_state: 42
+
+automl:
+  presets: "medium_quality"
+  time_limit: 120
+  eval_metric: "root_mean_squared_error"

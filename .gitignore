@@ -157,3 +157,6 @@ venv.bak/
 # mlflow local runs
 mlruns/*
 .viz/
+
+AutogluonModels/
+data/06_models/autogluon/
