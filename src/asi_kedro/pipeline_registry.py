@@ -12,5 +12,17 @@ def register_pipelines() -> dict[str, Pipeline]:
         A mapping from pipeline names to ``Pipeline`` objects.
     """
     pipelines = find_pipelines()
-    pipelines["__default__"] = sum(pipelines.values())
-    return pipelines
+
+    baseline = (
+        pipelines["data_processing"]
+        + pipelines["model_training"]
+        + pipelines["model_evaluation"]
+    )
+
+    return {
+        **pipelines,
+        "baseline": baseline,
+        "__default__": baseline,
+        "automl": pipelines["automl"],
+        "full": baseline + pipelines["automl"],
+    }

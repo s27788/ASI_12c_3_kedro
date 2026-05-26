@@ -1,7 +1,13 @@
 import logging
+import os
+
 import pandas as pd
-from sklearn.metrics import accuracy_score, f1_score
+import wandb
+from dotenv import load_dotenv
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, f1_score
+
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -36,5 +42,17 @@ def evaluate_model(
 
     logger.info("Accuracy: %.4f", metrics["accuracy"])
     logger.info("F1 Score: %.4f", metrics["f1"])
+
+    try:
+        wandb.init(
+            project=os.getenv("WANDB_PROJECT"),
+            entity=os.getenv("WANDB_ENTITY"),
+            name="baseline-random-forest",
+            config={"model_type": "RandomForestClassifier"},
+            tags=["baseline", "random_forest"],
+        )
+        wandb.log(metrics)
+    finally:
+        wandb.finish()
 
     return metrics

@@ -98,5 +98,113 @@ kedro run
 
 ---
 
-## Kolejne kroki
+## Sprint 4: AutoML (AutoGluon)
 
+### Konfiguracja lokalna
+
+**1. Credentials Kedro** — utwórz `conf/local/credentials.yml` (nie commituj):
+
+```yaml
+db_credentials:
+  con: sqlite:///data/01_raw/dataset.db
+```
+
+**2. Plik `.env`** — skopiuj z `.env.example` i uzupełnij:
+
+```bash
+cp .env.example .env
+```
+
+Wymagane zmienne: `WANDB_API_KEY`, `WANDB_PROJECT`, `WANDB_ENTITY`.
+
+**3. Baza danych** — umieść `dataset.db` w `data/01_raw/` (tabela `airline_data`).
+
+### Uruchomienie
+
+```bash
+kedro run --pipeline=full
+```
+
+### Eksperymenty AutoGluon
+
+W `conf/base/parameters.yml` zmieniamy tylko sekcję `automl` (`presets`, `time_limit`), potem:
+
+```bash
+kedro run --pipeline=automl
+```
+
+Przykładowe 3 eksperymenty:
+
+| # | presets | time_limit |
+|---|---------|------------|
+| 1 | `medium_quality` | 120 |
+| 2 | `medium_quality` | 300 |
+| 3 | `good_quality` | 300 |
+
+Parametr `automl.clean_path: true` **automatycznie usuwa** katalog `data/06_models/autogluon/` przed treningiem każdy eksperyment startuje od czystego stanu.
+
+### W&B — gdzie szukać wyników
+
+- **Baseline:** run `baseline-random-forest` (metryki `accuracy`, `f1`)
+- **AutoGluon:** run `automl-<preset>-<time>s` (metryka `f1`)
+- **Leaderboard:** otwórz run AutoGluon → zakładka **Tables** → `leaderboard` (nie Charts)
+
+---
+## Wyniki baseline
+
+Model:
+
+- `RandomForestClassifier`
+
+Wyniki:
+Accuracy 0.8068
+F1 Score 0.7820
+
+Run zapisany w W&B:
+
+```text
+
+baseline-random-forest
+
+```
+
+## Wyniki AutoML
+
+### Porównanie eksperymentów
+
+| Eksperyment | presets | time_limit | Najlepszy model | F1 |
+|---|---|---:|---|---:|
+| 1 | `medium_quality` | 120 | `ExtraTreesGini` | 0.7729 |
+| 2 | `medium_quality` | 300 | `WeightedEnsemble_L2` | 0.7740 |
+| 3 | `good_quality` | 300 | `RandomForestGini_BAG_L1` | 0.7766 |
+
+---
+
+## Wnioski z eksperymentów
+
+- zwiększenie `time_limit` z `120s` do `300s` nie przyniosło dużej poprawy jakości modelu
+- preset `good_quality` osiągnął najlepszy wynik spośród eksperymentów AutoML
+- najlepszy wynik AutoML: F1 = 0.7766
+- najlepszy model AutoML to RandomForestGini_BAG_L1
+- Baseline `RandomForestClassifier` nadal osiągnął nieco lepszy wynik (`F1 ≈ 0.782`)
+- eksperymenty pokazały wpływ parametrów `presets` oraz `time_limit` na jakość modeli
+
+## Screenshots
+
+Screenshoty z eksperymentów i dashboardów W&B znajdują się w:
+
+```text
+
+docs/screenshots_sprint04/
+
+```
+
+Zawierają:
+
+- terminale z uruchomienia pipeline’ów
+
+- dashboardy W&B
+
+- leaderboardy modeli AutoGluon
+
+- porównanie eksperymentów AutoML (`wandb_experiments_overview.png`)

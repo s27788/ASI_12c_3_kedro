@@ -7,6 +7,36 @@ processed_data:
   type: pandas.ParquetDataset
   filepath: data/02_intermediate/processed_data.parquet
 
+X_train:
+  type: pickle.PickleDataset
+  filepath: data/05_model_input/X_train.pkl
+  backend: pickle
+
+X_val:
+  type: pickle.PickleDataset
+  filepath: data/05_model_input/X_val.pkl
+  backend: pickle
+
+X_test:
+  type: pickle.PickleDataset
+  filepath: data/05_model_input/X_test.pkl
+  backend: pickle
+
+y_train:
+  type: pickle.PickleDataset
+  filepath: data/05_model_input/y_train.pkl
+  backend: pickle
+
+y_val:
+  type: pickle.PickleDataset
+  filepath: data/05_model_input/y_val.pkl
+  backend: pickle
+
+y_test:
+  type: pickle.PickleDataset
+  filepath: data/05_model_input/y_test.pkl
+  backend: pickle
+
 classifier:
   type: pickle.PickleDataset
   filepath: data/06_models/random_forest.pkl

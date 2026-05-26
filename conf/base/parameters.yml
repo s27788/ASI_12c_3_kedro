@@ -11,6 +11,18 @@ model:
   random_state: 42
 
 automl:
-  presets: "medium_quality"
-  time_limit: 120
-  eval_metric: "root_mean_squared_error"
+  presets: "good_quality"
+  time_limit: 300
+  eval_metric: "f1"
+  path: "data/06_models/autogluon"
+  verbosity: 1
+  clean_path: true
+
+# --- Eksperymenty Sprint 4 (zmien tylko sekcje automl, potem: kedro run --pipeline=automl) ---
+# Eksperyment 1 (domyslny): medium_quality, time_limit=120
+# Eksperyment 2: medium_quality, time_limit=300
+#   time_limit: 300
+# Eksperyment 3: good_quality, time_limit=300
+#   presets: "good_quality"
+#   time_limit: 300
+# Przed kazdym eksperymentem: rm -rf data/06_models/autogluon/
