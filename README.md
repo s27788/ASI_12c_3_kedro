@@ -208,3 +208,100 @@ Zawierają:
 - leaderboardy modeli AutoGluon
 
 - porównanie eksperymentów AutoML (`wandb_experiments_overview.png`)
+
+## Sprint 5: FastAPI
+
+### Cel
+
+Przygotowanie REST API umożliwiającego wykonywanie predykcji przy użyciu wytrenowanego modelu AutoGluon.  
+API działa niezależnie od pipeline'ów Kedro i wykorzystuje model zapisany na dysku.
+
+### Wymagania
+
+Przed uruchomieniem API model musi zostać wcześniej wytrenowany i zapisany w katalogu:
+
+```text
+data/06_models/autogluon/
+```
+
+Jeżeli model nie istnieje, należy uruchomić:
+
+```bash
+kedro run --pipeline=full
+```
+
+lub:
+
+```bash
+kedro run --pipeline=automl
+```
+
+### Uruchomienie
+
+```bash
+conda activate asi
+uvicorn api.main:app --reload
+```
+
+Dokumentacja Swagger:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+### Zrealizowane
+
+- utworzenie aplikacji FastAPI
+- ladowanie modelu AutoGluon przy starcie aplikacji
+- endpoint GET /health
+- endpoint GET /model-info
+- endpoint POST /predict
+- walidacja danych wejściowych przy użyciu Pydantic
+- obsługa błędów HTTP (422, 500, 503)
+- automatyczna dokumentacja Swagger
+
+### Endpointy
+
+| Metoda | Endpoint | Opis |
+|---------|---------|---------|
+| GET | /health | Status API oraz informacja o załadowanym modelu |
+| GET | /model-info | Informacje o aktualnie załadowanym modelu |
+| POST | /predict | Wykonanie predykcji |
+
+### Dane wejściowe
+
+Model wykorzystuje cechy:
+
+- Gender
+- Age
+- Customer Type
+- Type of Travel
+- Class
+- Flight Distance
+- arrival_delay_log
+- departure_delay_log
+
+pola arrival_delay_log oraz departure_delay_log zawierają wartości po transformacji log1p()  
+wykonanej podczas preprocessingu danych.
+
+Przykłady:
+
+- brak opóźnienia -> 0.0
+- 1 minuta opóźnienia -> ~0.69
+
+### Przykladowe wywolanie
+
+```bash
+curl -X POST "http://127.0.0.1:8000/predict" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "Gender": "Female",
+    "Age": 35,
+    "Customer Type": "Returning",
+    "Type of Travel": "Business",
+    "Class": "Business",
+    "Flight Distance": 1200,
+    "arrival_delay_log": 0.69,
+    "departure_delay_log": 1.10
+  }'
+```
