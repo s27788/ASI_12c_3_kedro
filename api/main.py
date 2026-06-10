@@ -1,5 +1,3 @@
-"""REST API for airline passenger satisfaction predictions."""
-
 import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -22,7 +20,6 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Load the ML model once at startup and release it on shutdown."""
     load_model()
     yield
     unload_model()
@@ -46,7 +43,6 @@ def health_check() -> dict[str, bool | str]:
 
 
 def _extract_prediction_value(prediction: object) -> int:
-    """Normalize AutoGluon/sklearn output to a single integer prediction."""
     if hasattr(prediction, "iloc"):
         value = prediction.iloc[0]
     else:
@@ -55,13 +51,11 @@ def _extract_prediction_value(prediction: object) -> int:
 
 
 def _get_model_name(predictor: object) -> str:
-    """Return the best model name from AutoGluon, with a safe fallback."""
     model_name = getattr(predictor, "model_best", None)
     return model_name if model_name else "autogluon"
 
 
 def _get_predictor_features(predictor: object) -> list[str]:
-    """Return feature names from AutoGluon metadata, or an empty list."""
     feature_metadata = getattr(predictor, "feature_metadata", None)
     if feature_metadata is None:
         return []
@@ -78,7 +72,6 @@ def _get_predictor_features(predictor: object) -> list[str]:
 
 
 def _format_model_path(saved_path: object) -> str:
-    """Return a project-relative model path when possible."""
     if saved_path is None:
         return AUTOGLUON_MODEL_RELATIVE_PATH
 
@@ -90,7 +83,6 @@ def _format_model_path(saved_path: object) -> str:
 
 
 def _build_model_info_response() -> ModelInfoResponse:
-    """Build model metadata from the loaded predictor without running inference."""
     predictor = get_predictor()
     if predictor is None:
         return ModelInfoResponse(loaded=False)
