@@ -1,5 +1,3 @@
-"""Load and store the AutoGluon prediction model for the API."""
-
 import logging
 from pathlib import Path
 
@@ -15,12 +13,10 @@ _predictor: TabularPredictor | None = None
 
 
 def get_predictor() -> TabularPredictor | None:
-    """Return the loaded predictor, or None if loading failed at startup."""
     return _predictor
 
 
 def is_model_loaded() -> bool:
-    """Return True when the predictor was loaded successfully at startup."""
     return _predictor is not None
 
 
@@ -56,6 +52,5 @@ def load_model() -> None:
 
 
 def unload_model() -> None:
-    """Clear the in-memory predictor reference on application shutdown."""
     global _predictor
     _predictor = None

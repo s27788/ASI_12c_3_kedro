@@ -1,21 +1,9 @@
-"""Pydantic request/response schemas for the prediction API."""
-
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
 class PassengerFeatures(BaseModel):
-    """Input features for airline passenger satisfaction prediction.
-
-    Column names match the AutoGluon training data. Delay fields must be provided
-    as ``log1p(minutes)`` — the same transform used in Kedro preprocessing
-    (e.g. ``0.69 ≈ log1p(1 minute)``, ``0.0`` = no delay).
-
-    Fields with spaces in JSON use Pydantic aliases; build the DataFrame with
-    ``model_dump(by_alias=True)``.
-    """
-
     model_config = ConfigDict(
         populate_by_name=True,
         json_schema_extra={
@@ -92,8 +80,6 @@ class PassengerFeatures(BaseModel):
 
 
 class PredictionResponse(BaseModel):
-    """Prediction result returned by POST /predict."""
-
     prediction: int = Field(
         ...,
         description="Predicted satisfaction: 1 = satisfied, 0 = neutral or dissatisfied.",
@@ -105,8 +91,6 @@ class PredictionResponse(BaseModel):
 
 
 class ModelInfoResponse(BaseModel):
-    """Metadata about the currently loaded prediction model."""
-
     loaded: bool = Field(..., description="Whether a prediction model is loaded in memory.")
     model_name: str | None = Field(
         default=None,
