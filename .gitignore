@@ -161,3 +161,7 @@ mlruns/*
 AutogluonModels/
 data/06_models/autogluon/
 wandb/
+
+#apiurl
+.streamlit/secrets.toml
+/streamlit/secrets.toml

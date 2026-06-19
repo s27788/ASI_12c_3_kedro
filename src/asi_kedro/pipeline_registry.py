@@ -25,4 +25,5 @@ def register_pipelines() -> dict[str, Pipeline]:
         "__default__": baseline,
         "automl": pipelines["automl"],
         "full": baseline + pipelines["automl"],
+        "synthetic": pipelines["synthetic"]
     }
