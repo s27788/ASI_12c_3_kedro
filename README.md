@@ -305,3 +305,100 @@ curl -X POST "http://127.0.0.1:8000/predict" \
     "departure_delay_log": 1.10
   }'
 ```
+
+
+## Sprint 6: Integracja Systemu (Streamlit, FastAPI & SDV)
+
+### Cel
+
+Zintegrowanie wszystkich elementów systemu w architekturze end-to-end.
+Dodanie potoku generowania danych syntetycznych przy użyciu SDV wraz z logowaniem metryk do Weights & Biases oraz stworzenie interaktywnego dashboardu w Streamlit komunikującego się z API FastAPI.
+
+### Wymagania
+
+Przed uruchomieniem systemu należy:
+
+* posiadać wytrenowany model (pipeline `full` lub `automl`)
+* skonfigurować zmienne środowiskowe i sekrety
+
+Wymagany plik:
+
+```text
+.streamlit/secrets.toml
+```
+
+Zawartość:
+
+```toml
+API_URL = "http://127.0.0.1:8000"
+```
+
+### Uruchomienie
+
+#### Pipeline danych syntetycznych
+
+```bash
+kedro run --pipeline=synthetic
+```
+
+Wynik zapisywany jest w:
+
+```text
+data/03_primary/synthetic_data.csv
+data/08_reporting/synthetic_scores.json
+```
+
+#### Uruchomienie pełnego systemu
+
+Backend (FastAPI):
+
+```bash
+uvicorn api.main:app --reload
+```
+
+Frontend (Streamlit):
+
+```bash
+streamlit run app/streamlit_app.py
+```
+
+### Zrealizowane
+
+* integracja FastAPI ze Streamlit (komunikacja HTTP)
+* stworzenie pipeline `synthetic` w Kedro
+* generowanie danych syntetycznych przy użyciu SDV
+* logowanie metryk `diagnostic_score` oraz `quality_score` do Weights & Biases
+* cache’owanie danych w Streamlit (`@st.cache_data`, `@st.cache_resource`)
+* obsługa błędów sieciowych i timeoutów w komunikacji z API
+* interaktywny dashboard użytkownika
+
+### Moduły aplikacji (Streamlit)
+
+#### Predykcja Satysfakcji
+
+* formularz wejściowy (slidery, selectboxy)
+* wysyłanie zapytań POST do API (`/predict`)
+* obsługa błędów i timeoutów
+* prezentacja wyniku predykcji
+
+#### Dane
+
+* odczyt z SQLite (`airline_data`)
+* cache’owanie (`@st.cache_data`)
+* podgląd próbek i statystyki opisowe
+* wykres rozkładu wybranej kolumny
+
+#### Dane syntetyczne
+
+* `GaussianCopulaSynthesizer` z cache (`@st.cache_resource`)
+* generowanie rekordów z zapisem w `st.session_state`
+* porównanie statystyk oryginału i danych syntetycznych
+* podgląd pliku z pipeline Kedro
+
+### Przepływ systemu
+
+1. Użytkownik wprowadza dane w aplikacji Streamlit
+2. Aplikacja wysyła zapytanie do API FastAPI
+3. API wykorzystuje model AutoGluon do predykcji
+4. Wynik zwracany jest do frontend i prezentowany użytkownikowi
+5. Niezależnie pipeline `synthetic` generuje i ocenia dane syntetyczne

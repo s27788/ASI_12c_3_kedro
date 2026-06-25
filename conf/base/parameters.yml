@@ -26,3 +26,7 @@ automl:
 #   presets: "good_quality"
 #   time_limit: 300
 # Przed kazdym eksperymentem: rm -rf data/06_models/autogluon/
+
+synthetic_config:
+  synthetic_rows: 500
+  wandb_project: "asi-pjatk"
