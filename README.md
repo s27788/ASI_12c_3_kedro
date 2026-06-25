@@ -345,6 +345,7 @@ Wynik zapisywany jest w:
 
 ```text
 data/03_primary/synthetic_data.csv
+data/08_reporting/synthetic_scores.json
 ```
 
 #### Uruchomienie pełnego systemu
@@ -380,19 +381,19 @@ streamlit run app/streamlit_app.py
 * obsługa błędów i timeoutów
 * prezentacja wyniku predykcji
 
-#### Przegląd Danych Realnych
+#### Dane
 
-* ładowanie danych w formacie Parquet
-* cache’owanie danych
-* podgląd próbek danych
-* statystyki opisowe (`.describe()`)
+* odczyt z SQLite (`airline_data`)
+* cache’owanie (`@st.cache_data`)
+* podgląd próbek i statystyki opisowe
+* wykres rozkładu wybranej kolumny
 
-#### Generator Danych Syntetycznych
+#### Dane syntetyczne
 
-* wykorzystanie `GaussianCopulaSynthesizer`
-* trenowanie lekkiego modelu w locie
-* generowanie dowolnej liczby rekordów
-* podgląd wcześniej wygenerowanego pliku z pipeline Kedro
+* `GaussianCopulaSynthesizer` z cache (`@st.cache_resource`)
+* generowanie rekordów z zapisem w `st.session_state`
+* porównanie statystyk oryginału i danych syntetycznych
+* podgląd pliku z pipeline Kedro
 
 ### Przepływ systemu
 

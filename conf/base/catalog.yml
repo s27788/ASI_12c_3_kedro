@@ -56,3 +56,7 @@ automl_metrics:
 synthetic_data_csv:
   type: pandas.CSVDataset
   filepath: data/03_primary/synthetic_data.csv
+
+evaluation_scores:
+  type: json.JSONDataset
+  filepath: data/08_reporting/synthetic_scores.json
